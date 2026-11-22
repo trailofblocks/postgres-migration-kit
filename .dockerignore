@@ -1,0 +1,6 @@
+.local
+.git
+.github
+.env
+artifacts
+postgres-migration-kit*

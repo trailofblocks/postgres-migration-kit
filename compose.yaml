@@ -1,0 +1,29 @@
+name: postgres-migration-kit
+
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: migration
+      POSTGRES_PASSWORD: migration-local
+    ports:
+      - "127.0.0.1:55496:5432"
+    volumes:
+      - kit-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "migration", "-d", "postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 25
+
+  kit:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://migration:migration-local@db:5432/postgres?sslmode=disable
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  kit-data:

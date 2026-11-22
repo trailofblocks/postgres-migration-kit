@@ -1,0 +1,47 @@
+name: Verify PostgreSQL Migration Kit
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      MIGRATION_TEST_DATABASE_URL: postgresql://migration:migration-local@127.0.0.1:55496/postgres?sslmode=disable
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.27.4"
+      - name: Check formatting and static analysis
+        run: |
+          test -z "$(gofmt -l *.go)"
+          go vet ./...
+      - name: Start Postgres
+        run: docker compose up -d --wait --wait-timeout 90 db
+      - name: Run PostgreSQL integration tests with race detection
+        run: go test -race -v ./...
+      - name: Build the container
+        run: docker compose build kit
+      - name: Run migration and rollback benchmark in Docker
+        run: |
+          mkdir -p artifacts
+          docker compose run --no-deps --rm -T kit benchmark > artifacts/benchmark.json
+          jq -e '.passed == true' artifacts/benchmark.json
+          cat artifacts/benchmark.json
+        env:
+          COMPOSE_ANSI: never
+      - name: Upload benchmark report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: postgres-migration-benchmark
+          path: artifacts/benchmark.json
+      - name: Stop test database
+        if: ${{ always() }}
+        run: docker compose down -v

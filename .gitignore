@@ -1,0 +1,5 @@
+.local/
+.env
+artifacts/
+postgres-migration-kit
+postgres-migration-kit.exe

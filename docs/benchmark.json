@@ -1,0 +1,165 @@
+{
+  "generated_at": "2026-11-22T20:06:28.7829717Z",
+  "configuration": {
+    "seed_rows": 100000,
+    "batch_size": 1000,
+    "target_write_requests_per_second": 400,
+    "concurrent_clients": 12
+  },
+  "minimum_phase_duration_ms": 1000,
+  "runner": "windows/amd64 go1.27.4",
+  "logical_cpus": 32,
+  "postgres_version": "18.7",
+  "phases": [
+    {
+      "name": "baseline_v1",
+      "v2_weight_percent": 0,
+      "duration_ms": 1000,
+      "requests": 400,
+      "requests_per_second": 400,
+      "v1_requests": 400,
+      "v2_requests": 0,
+      "failed": 0,
+      "p95_ms": 0.655,
+      "p99_ms": 1.132
+    },
+    {
+      "name": "expand",
+      "v2_weight_percent": 0,
+      "duration_ms": 1006,
+      "requests": 402,
+      "requests_per_second": 399.6023856858847,
+      "v1_requests": 402,
+      "v2_requests": 0,
+      "failed": 0,
+      "p95_ms": 0.669,
+      "p99_ms": 0.903
+    },
+    {
+      "name": "backfill_interrupted",
+      "v2_weight_percent": 0,
+      "duration_ms": 3214,
+      "requests": 1284,
+      "requests_per_second": 399.50217797137526,
+      "v1_requests": 1284,
+      "v2_requests": 0,
+      "failed": 0,
+      "p95_ms": 1.884,
+      "p99_ms": 23.232
+    },
+    {
+      "name": "backfill_resumed",
+      "v2_weight_percent": 0,
+      "duration_ms": 1364,
+      "requests": 547,
+      "requests_per_second": 401.0263929618768,
+      "v1_requests": 547,
+      "v2_requests": 0,
+      "failed": 0,
+      "p95_ms": 2.024,
+      "p99_ms": 12.527
+    },
+    {
+      "name": "validate",
+      "v2_weight_percent": 0,
+      "duration_ms": 1031,
+      "requests": 412,
+      "requests_per_second": 399.61202715809895,
+      "v1_requests": 412,
+      "v2_requests": 0,
+      "failed": 0,
+      "p95_ms": 1.861,
+      "p99_ms": 2.381
+    },
+    {
+      "name": "canary_25",
+      "v2_weight_percent": 25,
+      "duration_ms": 1000,
+      "requests": 401,
+      "requests_per_second": 401,
+      "v1_requests": 301,
+      "v2_requests": 100,
+      "failed": 0,
+      "p95_ms": 1.51,
+      "p99_ms": 2.081
+    },
+    {
+      "name": "cutover_v2",
+      "v2_weight_percent": 100,
+      "duration_ms": 1001,
+      "requests": 402,
+      "requests_per_second": 401.5984015984016,
+      "v1_requests": 0,
+      "v2_requests": 402,
+      "failed": 0,
+      "p95_ms": 1.041,
+      "p99_ms": 1.251
+    },
+    {
+      "name": "rollback_v1",
+      "v2_weight_percent": 0,
+      "duration_ms": 1020,
+      "requests": 408,
+      "requests_per_second": 400,
+      "v1_requests": 408,
+      "v2_requests": 0,
+      "failed": 0,
+      "p95_ms": 0.928,
+      "p99_ms": 1.215
+    },
+    {
+      "name": "contract_v2",
+      "v2_weight_percent": 100,
+      "duration_ms": 1005,
+      "requests": 402,
+      "requests_per_second": 400,
+      "v1_requests": 0,
+      "v2_requests": 402,
+      "failed": 0,
+      "p95_ms": 1.144,
+      "p99_ms": 1.395
+    }
+  ],
+  "interruption": {
+    "worker_process_killed": true,
+    "before_kill": {
+      "stage": "expanded",
+      "seed_rows": 100000,
+      "cutoff_id": 100204,
+      "checkpoint_id": 51000,
+      "copied_rows": 51000,
+      "committed_batches": 51
+    },
+    "restart_from": {
+      "stage": "expanded",
+      "seed_rows": 100000,
+      "cutoff_id": 100204,
+      "checkpoint_id": 51000,
+      "copied_rows": 51000,
+      "committed_batches": 51
+    },
+    "after_resume": {
+      "stage": "expanded",
+      "seed_rows": 100000,
+      "cutoff_id": 100204,
+      "checkpoint_id": 100204,
+      "copied_rows": 100197,
+      "committed_batches": 101
+    }
+  },
+  "compatibility_column_mismatches": 0,
+  "v1_read_payment_written_by_v2_after_rollback": true,
+  "route_switch_to_verified_v1_read_ms": 0.5153,
+  "final_consistency": {
+    "expected_rows": 102333,
+    "found_rows": 102333,
+    "missing_rows": 0,
+    "unexpected_rows": 0,
+    "mismatched_rows": 0,
+    "duplicate_ids": 0
+  },
+  "final_stage": "contracted",
+  "total_write_requests": 4658,
+  "failed_write_requests": 0,
+  "passed": true
+}
