@@ -2,6 +2,17 @@
 
 Migrate a populated payments table while it serves writes. The demo starts on a legacy Go API, kills a real backfill process near the halfway checkpoint, resumes it, canaries a second API, and rolls back to the first. It then contracts the schema and verifies every seeded and acknowledged payment against its expected amount, currency, and state.
 
+<!-- portfolio-demo-videos -->
+## Watch the demo
+
+Use it before changing how a busy app stores its data. The walkthrough has on-screen captions.
+
+![Captioned Online PostgreSQL Migration Kit walkthrough](docs/demo/how-to.gif)
+
+[Download the narrated walkthrough](docs/demo/how-to.mp4?raw=true) · [Download the narrated overview](docs/demo/overview.mp4?raw=true)
+
+<!-- /portfolio-demo-videos -->
+
 ## Run the benchmark
 
 With Docker and Compose v2:
